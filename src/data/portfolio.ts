@@ -262,8 +262,8 @@ export const heroSection: HeroSection = {
   },
   openToRolesText: "Seeking New Challenges",
   stats: [
+    { label: "Experience", value: 5, suffix: " yrs" },
     { label: "Projects", value: 6, suffix: "+" },
-    { label: "Experience", value: 5, suffix: "yrs" },
     { label: "Clients", value: 5, suffix: "+" },
   ],
   scrollLabel: "Scroll",
