@@ -47,7 +47,7 @@ const Contact = () => {
   const links = [
     { icon: Mail, label: personalInfo.email, href: `mailto:${personalInfo.email}` },
     { icon: Linkedin, label: "LinkedIn", href: personalInfo.linkedin },
-    { icon: Github, label: "GitHub", href: personalInfo.github },
+    // { icon: Github, label: "GitHub", href: personalInfo.github },
     { icon: MapPin, label: personalInfo.location, href: "#" },
   ];
 

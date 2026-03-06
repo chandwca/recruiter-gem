@@ -257,7 +257,7 @@ export const heroSection: HeroSection = {
     },
   ],
   profileImage: {
-    src: "profile.jpg",
+    src: "image.jpeg",
     fallbackAlt: "Profile",
   },
   openToRolesText: "Seeking New Challenges",
@@ -298,7 +298,6 @@ export const aboutSection: AboutSection = {
   techPills: [
     { name: "TypeScript", icon: "https://cdn.simpleicons.org/typescript/3178C6" },
     { name: "React", icon: "https://cdn.simpleicons.org/react/61DAFB" },
-    { name: "Next.js", icon: "https://cdn.simpleicons.org/nextdotjs/ffffff" },
     { name: "Python", icon: "https://cdn.simpleicons.org/python/3776AB" },
     { name: "Tailwind", icon: "https://cdn.simpleicons.org/tailwindcss/06B6D4" },
     { name: "Node.js", icon: "https://cdn.simpleicons.org/nodedotjs/339933" },
