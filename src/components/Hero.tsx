@@ -102,7 +102,7 @@ const Hero = () => {
   const isMobile = useIsMobile();
   const shouldReduceMotion = useReducedMotion();
   const resumeHref = personalInfo?.resumeUrl ?? heroSection.resumeCta.fallbackHref;
-  const resumeFileName = "Chetna_Chandwani_Resume.pdf";
+  const resumeFileName = "Chetna_Chandwani_Resume_2026.pdf";
   const isResumePdf = /\.pdf($|\?)/i.test(resumeHref);
 
   // Optimized Scroll Logic for "Breathing Room"
