@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useMotionValue, useSpring } from "framer-motion";
+import { useRef, useEffect } from "react";
 import { ExternalLink, TrendingUp } from "lucide-react";
 import { projects, type Project } from "@/data/portfolio";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,9 +15,37 @@ const GitHubIcon = ({ className }: { className?: string }) => (
 
 const Projects = () => {
   const shouldReduceMotion = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const rawX = useMotionValue(0);
+  const x = useSpring(rawX, { stiffness: 90, damping: 24, mass: 0.7 });
+
+  useEffect(() => {
+    if (shouldReduceMotion) return;
+
+    const compute = () => {
+      const el = sectionRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // progress: 0 = section top at viewport bottom, 1 = section top at viewport top
+      const progress = 1 - rect.top / vh;
+      const clamped = Math.max(0, Math.min(1, progress));
+      // Slide from 300px right → 0 as progress goes 0 → 0.35
+      rawX.set(clamped < 0.35 ? 300 * (1 - clamped / 0.35) : 0);
+    };
+
+    compute();
+    window.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", compute);
+      window.removeEventListener("resize", compute);
+    };
+  }, [shouldReduceMotion, rawX]);
 
   return (
-    <section id="projects" className="relative overflow-hidden py-20 md:py-24 lg:py-28">
+    <section ref={sectionRef} id="projects" className="relative overflow-hidden py-20 md:py-24 lg:py-28">
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_65%_at_50%_0%,hsl(var(--primary)/0.08),transparent_72%)]" />
       </div>
@@ -34,8 +63,11 @@ const Projects = () => {
         </div>
       </div>
 
-      {/* Scroll track */}
-      <div className="relative mt-10 sm:mt-12">
+      {/* Card row — translates right as you scroll up, glides back on scroll down */}
+      <motion.div
+        className="relative mt-10 sm:mt-12"
+        style={{ x }}
+      >
         {/* Right-edge fade */}
         <div
           className="pointer-events-none absolute right-0 top-0 z-10 h-full w-28 bg-gradient-to-l from-background to-transparent"
@@ -52,11 +84,10 @@ const Projects = () => {
                 shouldReduceMotion={shouldReduceMotion}
               />
             ))}
-            {/* breathing room so last card clears the fade */}
             <div className="w-20 shrink-0" aria-hidden="true" />
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
@@ -77,7 +108,7 @@ const ProjectCard = ({
     <motion.article
       initial={shouldReduceMotion ? false : { opacity: 0, y: 28 }}
       whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.12 }}
+      viewport={{ once: false, amount: 0.12 }}
       transition={
         shouldReduceMotion
           ? { duration: 0 }
@@ -87,10 +118,7 @@ const ProjectCard = ({
       className="relative flex h-[66vh] min-h-[36rem] max-h-[600px] w-[min(84vw,29rem)] shrink-0 lg:w-[32rem]"
     >
       <Card className="group relative flex h-full w-full flex-col overflow-hidden border-border/60 bg-card/90 shadow-[0_20px_60px_-30px_hsl(var(--foreground)/0.5)] backdrop-blur-xl transition-all duration-300 hover:border-primary/40 hover:shadow-[0_24px_70px_-28px_hsl(var(--primary)/0.25)]">
-        {/* Subtle mesh overlay */}
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,hsl(var(--foreground)/0.05),hsl(var(--foreground)/0.01)_50%,transparent)]" />
-
-        {/* Corner accent glow on hover */}
         <div
           style={{
             backgroundImage: isEven
@@ -101,7 +129,7 @@ const ProjectCard = ({
         />
 
         <CardContent className="relative flex h-full flex-col overflow-y-auto p-6 scrollbar-thin-primary">
-          {/* ── Header ─────────────────────────── */}
+          {/* Header */}
           <div className="flex items-center justify-between">
             <span className="font-mono text-[11px] font-semibold tracking-[0.18em] text-primary/55">
               {cardNumber}
@@ -136,10 +164,9 @@ const ProjectCard = ({
             </div>
           </div>
 
-          {/* Divider */}
           <div className="mt-4 h-px bg-border/50" />
 
-          {/* ── Title + description ─────────────── */}
+          {/* Title + description */}
           <div className="mt-5">
             <h3 className="text-[1.25rem] font-bold leading-snug tracking-tight text-foreground lg:text-[1.4rem]">
               {project.name}
@@ -149,7 +176,7 @@ const ProjectCard = ({
             </p>
           </div>
 
-          {/* ── Tech stack ──────────────────────── */}
+          {/* Tech stack */}
           <div className="mt-4 flex flex-wrap gap-1.5">
             {project.techStack.map((stack) => (
               <Badge
@@ -162,7 +189,7 @@ const ProjectCard = ({
             ))}
           </div>
 
-          {/* ── Impact highlights ───────────────── */}
+          {/* Impact highlights */}
           <div className="mt-5 flex-1 rounded-xl border border-border/50 bg-background/30 p-4">
             <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70">
               Impact Highlights

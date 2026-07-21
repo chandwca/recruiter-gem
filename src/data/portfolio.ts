@@ -281,7 +281,7 @@ export const heroSection: HeroSection = {
     },
   ],
   profileImage: {
-    src: "image.jpeg",
+    src: "image_new.jpeg",
     fallbackAlt: "Profile",
   },
   openToRolesText: "Seeking New Challenges",
